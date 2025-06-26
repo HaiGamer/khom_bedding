@@ -192,6 +192,44 @@ $gallery_images = $stmt_gallery->fetchAll();
    </div>
 </form>
 <template id="variant-template">
+   <div class="variant-row border rounded p-3 mb-3 position-relative">
+      <button type="button" class="btn-close remove-variant-btn position-absolute top-0 end-0 p-2"
+         aria-label="Close"></button>
+      <h6>Phiên bản Mới #<span class="variant-index"></span></h6>
+      <div class="row">
+         <div class="col-md-3 mb-3"><label class="form-label">SKU</label><input type="text" class="form-control"
+               name="variants[__INDEX__][sku]" required></div>
+         <div class="col-md-3 mb-3"><label class="form-label">Giá gốc (VNĐ)</label><input type="number"
+               placeholder="Bỏ trống nếu không giảm giá" class="form-control"
+               name="variants[__INDEX__][original_price]"></div>
+         <div class="col-md-3 mb-3"><label class="form-label">Giá bán (VNĐ)</label><input type="number"
+               class="form-control" name="variants[__INDEX__][price]" required></div>
+         <div class="col-md-3 mb-3"><label class="form-label">Tồn kho</label><input type="number" class="form-control"
+               name="variants[__INDEX__][stock]" required></div>
+      </div>
+      <div class="row">
+         <div class="col-md-9">
+            <div class="row">
+               <?php foreach($attributes as $attribute): ?>
+               <div class="col-md-4 mb-3">
+                  <label class="form-label"><?php echo htmlspecialchars($attribute['name']); ?></label>
+                  <select class="form-select" name="variants[__INDEX__][attributes][<?php echo $attribute['id']; ?>]">
+                     <option value="">Chọn <?php echo htmlspecialchars(strtolower($attribute['name'])); ?></option>
+                     <?php foreach($attribute_values as $value): if($value['attribute_id'] == $attribute['id']): ?>
+                     <option value="<?php echo $value['id']; ?>"><?php echo htmlspecialchars($value['value']); ?>
+                     </option>
+                     <?php endif; endforeach; ?>
+                  </select>
+               </div>
+               <?php endforeach; ?>
+            </div>
+         </div>
+         <div class="col-md-3 mb-3 d-flex align-items-center justify-content-center">
+            <div class="form-check"><input class="form-check-input" type="radio" name="default_variant_index"
+                  value="__INDEX__"><label class="form-check-label">Làm mặc định</label></div>
+         </div>
+      </div>
+   </div>
 </template>
 <?php 
 include_once __DIR__ . '/includes/footer.php'; 

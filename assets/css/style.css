@@ -8,6 +8,8 @@
     --accent-color: #c9005b;       /* Màu vàng đất (nhấn) */
     --text-color: #333333;         /* Màu chữ xám đậm */
     --white-color: #FFFFFF;
+    --wrapper-section-bg: #ff8e8e; /* Nền của các khối nội dung */
+    --wrapper-section-border: #E0DCD6; /* Màu viền của các khối nội dung */
 
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Montserrat', sans-serif;
@@ -42,6 +44,11 @@ a:hover {
     max-width: var(--container-max-width);
 }
 
+.btn-warning:hover {
+    background-color: #66a7fc; /* Màu vàng đất đậm hơn */
+    border-color: #66a7fc;
+    color: var(--white-color);
+}
 /* --- CÁC LỚP TIỆN ÍCH --- */
 .btn-primary {
     background-color: var(--accent-color);
@@ -220,6 +227,24 @@ a:hover {
     border-radius: 0;
     border-top: 2px solid var(--accent-color);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.main-nav .dropdown-menu li {
+    /* Thêm đường kẻ ngăn cách mỏng */
+    border-bottom: 1px solid #f0f0f0; 
+}
+.main-nav .dropdown-menu li:last-child {
+    /* Bỏ đường kẻ ở mục cuối cùng cho đẹp */
+    border-bottom: none; 
+}
+.main-nav .dropdown-menu .dropdown-item {
+    padding: 0.75rem 1.25rem; /* Tùy chỉnh lại padding cho thoáng */
+    transition: background-color 0.2s ease-in-out;
+}
+.main-nav .dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: var(--accent-color);
 }
 @media (min-width: 992px) {
     .main-nav .nav-item.dropdown:hover .dropdown-menu {
@@ -274,4 +299,60 @@ a:hover {
     font-size: 0.9em;
     color: var(--accent-color);
     font-weight: bold;
+}
+/* === HIỆU ỨNG CHO CARD SẢN PHẨM & BÀI VIẾT === */
+.product-card, .post-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover, .post-card:hover {
+    transform: translateY(-5px); /* Nhấc card lên một chút */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important; /* Đổ bóng rõ hơn */
+}
+/* === HIỆU ỨNG CHO CARD SẢN PHẨM & BÀI VIẾT === */
+.product-card, .post-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover, .post-card:hover {
+    transform: translateY(-5px); /* Nhấc card lên một chút */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1) !important; /* Đổ bóng rõ hơn */
+}
+
+/* === KHỐI MÃ MỚI: STYLING CHO KHU VỰC SẢN PHẨM NỔI BẬT === */
+.category-tabs-section-wrapper {
+    background-color: var(--wrapper-section-bg); /* Nền trắng để tách biệt với nền chính */
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 1rem;
+}
+
+.category-tab-nav {
+    border-bottom: 2px solid #dee2e6; 
+}
+
+.category-tab-nav .nav-link {
+    font-size: 1.1rem; 
+    font-weight: 500;
+    color: #5e5e5e; 
+    background: #c9c9c9;
+    border: none;
+    border-top: 3px solid transparent; 
+    margin-bottom: -2px; 
+    /*padding: 0.75rem 1.5rem;*/
+}
+.nav-item-sp {
+    margin-right: 0.2rem; /* Bỏ khoảng cách dưới mỗi tab */
+}
+.category-tab-nav .nav-link.active,
+.category-tab-nav .nav-link:hover {
+    color: var(--text-color); 
+    border-color: var(--accent-color); 
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    --text-color: #fff;
+    color: var(--text-color);
+    background-color: var(--wrapper-section-bg);
 }
