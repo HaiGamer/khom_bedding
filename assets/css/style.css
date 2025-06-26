@@ -1,0 +1,277 @@
+/* --- NHẬP PHÔNG CHỮ TỪ GOOGLE FONTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Playfair+Display:wght@700;800&display=swap');
+
+/* --- BIẾN MÀU SẮC & PHÔNG CHỮ (CSS Variables) --- */
+:root {
+    --primary-color: #F4F1EA;      /* Màu chủ đạo */
+    --secondary-color: #67aa84;    /* Màu xanh cổ vịt */
+    --accent-color: #c9005b;       /* Màu vàng đất (nhấn) */
+    --text-color: #333333;         /* Màu chữ xám đậm */
+    --white-color: #FFFFFF;
+
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+
+    --container-max-width: 1440px;
+}
+
+/* --- THIẾT LẬP CƠ BẢN --- */
+body {
+    font-family: var(--font-body);
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--accent-color);
+}
+
+.container-fluid, .container {
+    max-width: var(--container-max-width);
+}
+
+/* --- CÁC LỚP TIỆN ÍCH --- */
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--white-color);
+    font-family: var(--font-body);
+    font-weight: 500;
+    padding: 12px 30px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #c59461; /* Màu vàng đất đậm hơn */
+    border-color: #c59461;
+    color: var(--white-color);
+}
+
+/* --- TÙY CHỈNH HEADER --- */
+.main-header {
+    background-color: var(--white-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 0.25rem 0;
+}
+
+.navbar-brand {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-color) !important;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: 0 1rem;
+    color: var(--text-color) !important;
+}
+
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+.header-icons .icon {
+    font-size: 1.5rem;
+    margin-left: 1.5rem;
+    color: var(--text-color);
+}
+
+/* --- TÙY CHỈNH FOOTER --- */
+.main-footer {
+    background-color: #EAE6DD; /* Một tông màu đậm hơn màu chủ đạo */
+    padding: 4rem 0 2rem 0;
+    margin-top: 5rem;
+}
+
+.footer-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-links li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links a {
+    color: var(--text-color);
+}
+/* --- TÙY CHỈNH HERO BANNER --- */
+.hero-carousel .carousel-item img {
+    /* Bạn có thể thay đổi giá trị 400px này thành chiều cao mong muốn */
+    max-height: 300px; 
+    
+    /* Thuộc tính này rất quan trọng, nó giúp ảnh không bị méo khi thay đổi kích thước */
+    /* 'cover' sẽ lấp đầy không gian, tự động cắt phần thừa của ảnh nếu cần */
+    object-fit: cover;
+    width: 100%;
+}
+/* === LÀM GIÁ GỐC NHỎ ĐI === */
+.price-original {
+    font-size: 0.8em; /* Kích thước nhỏ hơn một chút */
+    font-weight: 500; /* Bỏ in đậm */
+    color: #6c757d;   /* Màu xám mờ của Bootstrap */
+    text-decoration: line-through; /* Giữ gạch ngang */
+    margin-left: 0.5rem; /* Thêm một chút khoảng cách */
+}
+/* === SỬA LỖI HEADER CHE MẤT NỘI DUNG KHI CUỘN TRANG === */
+#productInfoTab {
+    scroll-margin-top: 150px; /* Giá trị này có thể cần điều chỉnh cho bằng chiều cao của header */
+}
+/* ... */
+/* --- CSS CHO SAO ĐÁNH GIÁ --- */
+.rating-stars { display: inline-block; }
+.rating-stars input[type="radio"] { display: none; }
+.rating-stars label {
+    font-size: 2rem; color: #ccc;
+    cursor: pointer;
+    float: right; /* Đảo ngược thứ tự để chọn sao dễ hơn */
+    transition: color 0.2s;
+}
+.rating-stars label:before { content: '★'; }
+.rating-stars input[type="radio"]:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label { color: #ffc107; }
+
+
+
+/* === HEADER NÂNG CẤP === */
+
+/* --- THIẾT LẬP CHUNG CHO HEADER DÍNH LẠI --- */
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1030; /* z-index cao để luôn nổi trên các thành phần khác */
+    background-color: var(--white-color); /* Nền cho toàn bộ header */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* --- Tầng trên của Header --- */
+.header-top {
+    /* ---padding: 0.75rem 0;--- */
+    border-bottom: 1px solid #e9ecef;
+}
+.header-top .brand-logo {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-color);
+    text-decoration: none;
+}
+.header-top .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+.header-top .top-actions .icon-link {
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+.header-top .hotline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+}
+.header-top .hotline i {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+/* --- Tầng dưới (Thanh điều hướng chính) --- */
+.header-main-nav {
+    /* Đã xóa position:sticky từ đây */
+    background-color: var(--white-color);
+}
+.main-nav .navbar-nav { gap: 0.5rem; }
+.main-nav .nav-link {
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0.25rem 0.5rem; 
+    letter-spacing: 0.5px;
+    color: var(--text-color) !important;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+.main-nav .nav-link:hover, .main-nav .nav-link.active {
+    color: var(--accent-color) !important;
+    border-bottom-color: var(--accent-color);
+}
+.main-nav .dropdown-menu {
+    border-radius: 0;
+    border-top: 2px solid var(--accent-color);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+@media (min-width: 992px) {
+    .main-nav .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; 
+    }
+}
+
+/* --- Header cho di động --- */
+.mobile-header {
+    padding: 0.25rem 0;
+    /* Đã xóa position:sticky từ đây, vì nó được áp dụng cho .main-header cha */
+}
+.mobile-header .brand-logo-mobile {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+/* --- CSS CHO LIVE SEARCH --- */
+.search-results-dropdown .result-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: background-color 0.2s;
+}
+.search-results-dropdown .result-item:last-child {
+    border-bottom: none;
+}
+.search-results-dropdown .result-item:hover {
+    background-color: #f8f9fa;
+}
+.search-results-dropdown .result-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 1rem;
+}
+.search-results-dropdown .result-item .result-info {
+    display: flex;
+    flex-direction: column;
+}
+.search-results-dropdown .result-item .result-name {
+    font-weight: 500;
+}
+.search-results-dropdown .result-item .result-price {
+    font-size: 0.9em;
+    color: var(--accent-color);
+    font-weight: bold;
+}
