@@ -36,18 +36,51 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // =======================================================
-    // --- LOGIC CHO BÁO CÁO TỒN KHO ---
+    // --- LOGIC CHO BÁO CÁO TỒN KHO (ĐÃ NÂNG CẤP) ---
     // =======================================================
-    const stockInputs = document.querySelectorAll('.stock-update-input');
-    if (stockInputs.length > 0) {
+    const inventoryTableBody = document.getElementById('inventory-table-body');
+    if (inventoryTableBody) {
+        const grandTotalElement = document.getElementById('inventory-grand-total');
         let stockUpdateTimeout;
-        stockInputs.forEach(input => {
-            input.addEventListener('change', function() {
+
+        // --- HÀM MỚI: TÍNH TOÁN LẠI TỔNG GIÁ TRỊ VỐN TỒN KHO ---
+        function recalculateTotalCost() {
+            let grandTotal = 0;
+            const itemRows = inventoryTableBody.querySelectorAll('.inventory-item-row');
+            
+            itemRows.forEach(row => {
+                const costPrice = parseFloat(row.dataset.costPrice) || 0;
+                const stockQty = parseInt(row.querySelector('.stock-update-input').value) || 0;
+                const totalRowCost = costPrice * stockQty;
+                
+                // Cập nhật tổng vốn của riêng dòng đó
+                row.querySelector('.item-total-cost').textContent = new Intl.NumberFormat('vi-VN').format(totalRowCost) + 'đ';
+                
+                // Cộng dồn vào tổng cuối cùng
+                grandTotal += totalRowCost;
+            });
+
+            // Cập nhật tổng vốn toàn cửa hàng
+            if (grandTotalElement) {
+                grandTotalElement.textContent = new Intl.NumberFormat('vi-VN').format(grandTotal) + 'đ';
+            }
+        }
+
+        // Lắng nghe sự kiện input/change trên toàn bộ tbody
+        inventoryTableBody.addEventListener('input', function(event) {
+            // Chỉ xử lý nếu thay đổi đến từ ô input tồn kho
+            if (event.target.classList.contains('stock-update-input')) {
+                // Tính toán lại ngay lập tức trên giao diện
+                recalculateTotalCost();
+                
+                // Gửi yêu cầu cập nhật về server sau một khoảng trễ
                 clearTimeout(stockUpdateTimeout);
-                const variantId = this.dataset.variantId;
-                const newStock = this.value;
-                const originalBackgroundColor = this.style.backgroundColor;
-                this.style.backgroundColor = '#fff3cd';
+                
+                const inputElement = event.target;
+                const variantId = inputElement.dataset.variantId;
+                const newStock = inputElement.value;
+                const originalBackgroundColor = inputElement.style.backgroundColor;
+                inputElement.style.backgroundColor = '#fff3cd'; // Vàng nhạt
 
                 stockUpdateTimeout = setTimeout(() => {
                     fetch('ajax-update-stock.php', {
@@ -60,18 +93,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) { this.style.backgroundColor = '#d1e7dd'; } 
-                        else {
-                            this.style.backgroundColor = '#f8d7da';
+                        if (data.success) {
+                            inputElement.style.backgroundColor = '#d1e7dd'; // Xanh lá
+                        } else {
+                            inputElement.style.backgroundColor = '#f8d7da'; // Đỏ
                             alert(data.message || 'Có lỗi xảy ra.');
                         }
                     })
-                    .catch(error => { this.style.backgroundColor = '#f8d7da'; console.error('Update stock error:', error); })
+                    .catch(error => {
+                        inputElement.style.backgroundColor = '#f8d7da';
+                        console.error('Update stock error:', error);
+                    })
                     .finally(() => {
-                        setTimeout(() => { this.style.backgroundColor = originalBackgroundColor; }, 1500);
+                        setTimeout(() => {
+                            inputElement.style.backgroundColor = originalBackgroundColor;
+                        }, 1500);
                     });
                 }, 800);
-            });
+            }
         });
     }
 
