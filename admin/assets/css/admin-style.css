@@ -24,3 +24,23 @@ body { background-color: #f8f9fa; }
     object-fit: cover; /* Đây là thuộc tính quan trọng nhất */
 }
 /* === KẾT THÚC ĐOẠN MÃ MỚI === */
+
+/* === CSS CHO BẢN IN === */
+@media print {
+    /* Ẩn tất cả những gì không cần thiết */
+    .sidebar, .main-header, .print-hide {
+        display: none !important;
+    }
+    /* Hiển thị nội dung chính trên toàn bộ trang in */
+    .main-content {
+        margin-left: 0;
+        padding: 0;
+    }
+    body {
+        background-color: #fff; /* Nền trắng cho trang in */
+    }
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+}

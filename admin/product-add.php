@@ -62,6 +62,8 @@ $attribute_values = $pdo->query("SELECT id, attribute_id, value FROM attribute_v
       <div class="row">
          <div class="col-md-3 mb-3"><label class="form-label">SKU</label><input type="text" class="form-control"
                name="variants[__INDEX__][sku]" required></div>
+         <div class="col-md-3 mb-3"><label class="form-label">Giá vốn (VNĐ)</label><input type="number"
+               class="form-control" name="variants[__INDEX__][cost_price]" value="0" required></div>
          <div class="col-md-3 mb-3"><label class="form-label">Giá gốc (VNĐ)</label><input type="number"
                placeholder="Bỏ trống nếu không giảm giá" class="form-control"
                name="variants[__INDEX__][original_price]"></div>

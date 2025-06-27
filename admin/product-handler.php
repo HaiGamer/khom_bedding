@@ -50,6 +50,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_product') {
         }
         
         foreach ($variants as $index => $variant_data) {
+            $cost_price = $variant_data['cost_price'] ?? 0; // Lấy giá vốn
             $sku = $variant_data['sku'] ?? '';
             $price = $variant_data['price'] ?? 0;
             $original_price = !empty($variant_data['original_price']) ? $variant_data['original_price'] : null;
@@ -57,9 +58,9 @@ if (isset($_POST['action']) && $_POST['action'] === 'add_product') {
             $attributes = $variant_data['attributes'] ?? [];
             $is_default = ($index == $default_variant_index);
 
-            $sql_variant = "INSERT INTO product_variants (product_id, sku, price, original_price, stock_quantity, is_default) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql_variant = "INSERT INTO product_variants (product_id, sku, price, original_price, cost_price, stock_quantity, is_default) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt_variant = $pdo->prepare($sql_variant);
-            $stmt_variant->execute([$product_id, $sku, $price, $original_price, $stock, $is_default]);
+            $stmt_variant->execute([$product_id, $sku, $price, $original_price, $cost_price, $stock, $is_default]);
             $variant_id = $pdo->lastInsertId();
 
             $sql_variant_value = "INSERT INTO variant_values (variant_id, attribute_value_id) VALUES (?, ?)";
@@ -114,6 +115,7 @@ elseif (isset($_POST['action']) && $_POST['action'] === 'edit_product') {
         }
         
         foreach ($variants as $index => $variant_data) {
+            $cost_price = $variant_data['cost_price'] ?? 0; // Lấy giá vốn
             $variant_id = (int)($variant_data['id'] ?? 0);
             $sku = $variant_data['sku'] ?? '';
             $price = $variant_data['price'] ?? 0;
@@ -123,13 +125,13 @@ elseif (isset($_POST['action']) && $_POST['action'] === 'edit_product') {
             $is_default = ($index == $default_variant_index);
             
             if ($variant_id > 0) { // Cập nhật phiên bản đã có
-                $sql_variant = "UPDATE product_variants SET sku = ?, price = ?, original_price = ?, stock_quantity = ?, is_default = ? WHERE id = ? AND product_id = ?";
+                $sql_variant = "UPDATE product_variants SET sku = ?, price = ?, original_price = ?, cost_price = ?, stock_quantity = ?, is_default = ? WHERE id = ? AND product_id = ?";
                 $stmt_variant = $pdo->prepare($sql_variant);
-                $stmt_variant->execute([$sku, $price, $original_price, $stock, $is_default, $variant_id, $product_id]);
+                $stmt_variant->execute([$sku, $price, $original_price, $cost_price, $stock, $is_default, $variant_id, $product_id]);
             } else { // Thêm phiên bản mới
-                $sql_variant = "INSERT INTO product_variants (product_id, sku, price, original_price, stock_quantity, is_default) VALUES (?, ?, ?, ?, ?, ?)";
+                $sql_variant = "INSERT INTO product_variants (product_id, sku, price, original_price, cost_price, stock_quantity, is_default) VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt_variant = $pdo->prepare($sql_variant);
-                $stmt_variant->execute([$product_id, $sku, $price, $original_price, $stock, $is_default]);
+                $stmt_variant->execute([$product_id, $sku, $price, $original_price, $cost_price, $stock, $is_default]);
                 $variant_id = $pdo->lastInsertId();
             }
             

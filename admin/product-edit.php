@@ -100,6 +100,9 @@ $gallery_images = $stmt_gallery->fetchAll();
                         <div class="col-md-3 mb-3"><label class="form-label">SKU</label><input type="text"
                               class="form-control" name="variants[<?php echo $index; ?>][sku]"
                               value="<?php echo htmlspecialchars($variant['sku']); ?>" required></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">Giá vốn (VNĐ)</label><input type="number"
+                              class="form-control" name="variants[<?php echo $index; ?>][cost_price]"
+                              value="<?php echo htmlspecialchars($variant['cost_price']); ?>" required></div>
                         <div class="col-md-3 mb-3"><label class="form-label">Giá gốc (VNĐ)</label><input type="number"
                               placeholder="Bỏ trống nếu không giảm giá" class="form-control"
                               name="variants[<?php echo $index; ?>][original_price]"
@@ -107,9 +110,6 @@ $gallery_images = $stmt_gallery->fetchAll();
                         <div class="col-md-3 mb-3"><label class="form-label">Giá bán (VNĐ)</label><input type="number"
                               class="form-control" name="variants[<?php echo $index; ?>][price]"
                               value="<?php echo htmlspecialchars($variant['price']); ?>" required></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Tồn kho</label><input type="number"
-                              class="form-control" name="variants[<?php echo $index; ?>][stock]"
-                              value="<?php echo htmlspecialchars($variant['stock_quantity']); ?>" required></div>
                      </div>
                      <div class="row">
                         <div class="col-md-9">
