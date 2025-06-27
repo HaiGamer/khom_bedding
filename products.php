@@ -9,7 +9,7 @@ $category_slug = $_GET['category'] ?? null;
 $category_name = 'Tất cả sản phẩm'; // Tên mặc định
 
 // 2. Cấu hình phân trang ban đầu
-$results_per_page = 2; // Số sản phẩm trên mỗi trang
+$results_per_page = 12; // Số sản phẩm trên mỗi trang
 
 // 3. Xây dựng điều kiện WHERE ban đầu
 $where_clause = "WHERE pv.is_default = TRUE";

@@ -181,7 +181,7 @@ if (!empty($featured_categories)) {
          </div>
          <div class="col-md-4">
             <i class="bi bi-patch-check" style="font-size: 3rem; color: var(--accent-color);"></i>
-            <h5 class="mt-3">Bảo Hành 1 Năm</h5>
+            <h5 class="mt-3">Bảo Hành</h5>
             <p>Cam kết chất lượng, hỗ trợ đổi trả dễ dàng.</p>
          </div>
       </div>

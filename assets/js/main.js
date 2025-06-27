@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Khai báo biến BASE_URL nếu nó được định nghĩa trong header.php
     const BASE_URL = window.BASE_URL || '';
     
+    // === KHAI BÁO CÁC BIẾN TOÀN CỤC CHO HEADER ===
+    // Di chuyển ra đây để tất cả các logic khác đều có thể sử dụng
+    const cartCountEl = document.getElementById('cart-item-count');
+    const cartCountMobile = document.getElementById('cart-item-count-mobile');
     // =======================================================
     // #1 LOGIC CHO LIVE SEARCH Ở HEADER
     // =======================================================
@@ -211,7 +215,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 const result = await response.json();
                 if (result.success) {
-                    addToCartBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Đã thêm!';
+                    addToCartBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Đã thêm vào giỏ hàng!';
+                    const toastElement = document.getElementById('add-to-cart-toast');
+                    if (toastElement) {
+                        const toast = new bootstrap.Toast(toastElement);
+                        toast.show();
+                    }
                     const cartCountMobile = document.getElementById('cart-item-count-mobile');
                     if(cartCountEl) { cartCountEl.textContent = result.cart_count; }
                     if(cartCountMobile) { cartCountMobile.textContent = result.cart_count; }
@@ -330,7 +339,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (cartPage) {
         const cartSubtotalEl = document.getElementById('cart-subtotal');
         const cartGrandTotalEl = document.getElementById('cart-grand-total');
-        const cartCountEl = document.getElementById('cart-item-count');
 
         function updateCartTotals() {
             let grandTotal = 0;

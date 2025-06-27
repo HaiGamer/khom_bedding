@@ -4,7 +4,7 @@ require_once __DIR__ . '/core/config.php';
 // --- PHẦN LOGIC XỬ LÝ LỌC, SẮP XẾP, PHÂN TRANG ---
 try {
     // 1. Cấu hình phân trang
-    $results_per_page = 2;
+    $results_per_page = 12;
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     if ($page < 1) { $page = 1; }
     $offset = ($page - 1) * $results_per_page;
