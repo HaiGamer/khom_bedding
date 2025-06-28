@@ -20,7 +20,7 @@
          </h5>
          <p class="card-text fw-bold" style="color: var(--accent-color);">
             <?php if (isset($product['original_price']) && $product['original_price'] > $product['price']): ?>
-            <span class="me-2 fs-5"><?php echo number_format($product['price'], 0, ',', '.'); ?>đ</span>
+            <span class="me-2"><?php echo number_format($product['price'], 0, ',', '.'); ?>đ</span>
             - <del class="price-original">
                <?php echo number_format($product['original_price'], 0, ',', '.'); ?>đ</del>
             <?php else: ?>

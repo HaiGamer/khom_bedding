@@ -37,6 +37,18 @@ if (!empty($variants)) {
     }
 }
 
+// LẤY TẤT CẢ BỘ SƯU TẬP
+$all_collections = $pdo->query("SELECT id, name FROM collections ORDER BY name ASC")->fetchAll();
+
+// LẤY CÁC BỘ SƯU TẬP MÀ SẢN PHẨM NÀY ĐANG THUỘC VỀ
+$product_in_collections = [];
+$stmt_pc = $pdo->prepare("SELECT collection_id FROM product_collections WHERE product_id = ?");
+$stmt_pc->execute([$product_id]);
+$product_in_collections_raw = $stmt_pc->fetchAll(PDO::FETCH_COLUMN);
+foreach ($product_in_collections_raw as $cid) {
+    $product_in_collections[$cid] = true;
+}
+
 $gallery_images = [];
 $stmt_gallery = $pdo->prepare("SELECT * FROM product_images WHERE product_id = ? ORDER BY is_featured DESC, id ASC");
 $stmt_gallery->execute([$product_id]);
@@ -85,6 +97,26 @@ $gallery_images = $stmt_gallery->fetchAll();
                   <textarea class="form-control" id="description-editor" name="description"
                      rows="10"><?php echo htmlspecialchars($product['description']); ?></textarea>
                </div>
+
+               <div class="card">
+                  <h5 class="card-header">Thuộc Bộ sưu tập</h5>
+
+                  <div class="card-body">
+                     <?php foreach($all_collections as $collection): ?>
+                     <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="collections[]"
+                           value="<?php echo $collection['id']; ?>" id="collection-<?php echo $collection['id']; ?>"
+                           <?php if(isset($product_in_collections[$collection['id']])) echo 'checked'; ?>>
+                        <label class="form-check-label" for="collection-<?php echo $collection['id']; ?>">
+                           <?php echo htmlspecialchars($collection['name']); ?>
+                        </label>
+                     </div>
+                     <?php endforeach; ?>
+                  </div>
+               </div>
+
+
+
                <hr class="my-4">
                <h5 class="mb-3">Các phiên bản sản phẩm</h5>
                <div id="variants-container">
@@ -100,6 +132,11 @@ $gallery_images = $stmt_gallery->fetchAll();
                         <div class="col-md-3 mb-3"><label class="form-label">SKU</label><input type="text"
                               class="form-control" name="variants[<?php echo $index; ?>][sku]"
                               value="<?php echo htmlspecialchars($variant['sku']); ?>" required></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">Tồn kho</label><input type="number"
+                              class="form-control" name="variants[<?php echo $index; ?>][stock]"
+                              value="<?php echo (int)($variant['stock_quantity'] ?? 0); ?>" required></div>
+                     </div>
+                     <div class="row">
                         <div class="col-md-3 mb-3"><label class="form-label">Giá vốn (VNĐ)</label><input type="number"
                               class="form-control" name="variants[<?php echo $index; ?>][cost_price]"
                               value="<?php echo htmlspecialchars($variant['cost_price']); ?>" required></div>
@@ -170,9 +207,11 @@ $gallery_images = $stmt_gallery->fetchAll();
                               style="line-height: 1; padding: 0.2rem 0.45rem;"><i class="bi bi-x-lg"></i></button></div>
                         <?php if(!$image['is_featured']): ?>
                         <div class="position-absolute bottom-0 w-100 p-1 text-center"
-                           style="background: rgba(0,0,0,0.5);"><button type="submit" name="set_featured_image"
-                              value="<?php echo $image['id']; ?>" class="btn btn-sm btn-light w-100"><i
-                                 class="bi bi-star-fill"></i> Đặt làm đại diện</button></div>
+                           style="background: rgba(0,0,0,0.5);">
+                           <button type="submit" name="set_featured_image" value="<?php echo $image['id']; ?>"
+                              class="btn btn-sm btn-light w-100"><i class="bi bi-star-fill"></i> Đặt làm đại
+                              diện</button>
+                        </div>
                         <?php else: ?>
                         <div class="position-absolute bottom-0 w-100 p-1 text-center bg-success text-white"><small><i
                                  class="bi bi-star-fill"></i> Ảnh đại diện</small></div>
@@ -205,7 +244,7 @@ $gallery_images = $stmt_gallery->fetchAll();
          <div class="col-md-3 mb-3"><label class="form-label">Giá bán (VNĐ)</label><input type="number"
                class="form-control" name="variants[__INDEX__][price]" required></div>
          <div class="col-md-3 mb-3"><label class="form-label">Tồn kho</label><input type="number" class="form-control"
-               name="variants[__INDEX__][stock]" required></div>
+               name="variants[__INDEX__][stock]" value="0" required></div>
       </div>
       <div class="row">
          <div class="col-md-9">

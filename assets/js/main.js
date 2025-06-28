@@ -4,11 +4,58 @@ document.addEventListener('DOMContentLoaded', function () {
     const BASE_URL = window.BASE_URL || '';
     
     // === KHAI BÁO CÁC BIẾN TOÀN CỤC CHO HEADER ===
-    // Di chuyển ra đây để tất cả các logic khác đều có thể sử dụng
     const cartCountEl = document.getElementById('cart-item-count');
     const cartCountMobile = document.getElementById('cart-item-count-mobile');
+    
     // =======================================================
-    // #1 LOGIC CHO LIVE SEARCH Ở HEADER
+    // --- LOGIC CHO FORM ĐĂNG KÝ NHẬN TIN Ở FOOTER ---
+    // =======================================================
+    const subscriptionForm = document.getElementById('subscription-form');
+    if (subscriptionForm) {
+        const messageDiv = document.getElementById('subscription-message');
+        const emailInput = subscriptionForm.querySelector('input[name="email"]');
+        const submitButton = subscriptionForm.querySelector('button[type="submit"]');
+
+        subscriptionForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const originalButtonHTML = submitButton.innerHTML;
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+            messageDiv.textContent = '';
+            
+            const formData = new FormData(this);
+
+            fetch(`${BASE_URL}subscribe-handler.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                messageDiv.textContent = data.message;
+                if(data.success) {
+                    messageDiv.className = 'small mt-2 text-success';
+                    emailInput.value = ''; // Xóa email sau khi thành công
+                } else {
+                    messageDiv.className = 'small mt-2 text-danger';
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi đăng ký nhận tin:', error);
+                messageDiv.textContent = 'Có lỗi xảy ra, vui lòng thử lại.';
+                messageDiv.className = 'small mt-2 text-danger';
+            })
+            .finally(() => {
+                // Trả lại trạng thái ban đầu cho nút bấm
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonHTML;
+            });
+        });
+    }
+
+
+    // =======================================================
+    // #1 LOGIC CHO LIVE SEARCH Ở HEADER (Chạy trên tất cả các trang)
     // =======================================================
     const desktopSearchInput = document.getElementById('live-search-input');
     const desktopResultsContainer = document.getElementById('search-results-container');
@@ -16,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const mobileResultsContainer = document.getElementById('mobile-search-results');
     let searchTimeout;
 
-    // Hàm tìm kiếm có thể tái sử dụng
     function performLiveSearch(searchTerm, resultsContainer) {
         if (searchTerm.length < 2) {
             resultsContainer.innerHTML = '';
@@ -58,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Gắn sự kiện cho ô tìm kiếm Desktop
     if (desktopSearchInput && desktopResultsContainer) {
         desktopSearchInput.addEventListener('keyup', function() {
             clearTimeout(searchTimeout);
@@ -68,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Gắn sự kiện cho ô tìm kiếm Mobile
     if (mobileSearchInput && mobileResultsContainer) {
         mobileSearchInput.addEventListener('keyup', function() {
             clearTimeout(searchTimeout);
@@ -78,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
-    // Ẩn kết quả khi click ra ngoài (chỉ cho desktop)
     document.addEventListener('click', function(event) {
         const searchContainer = document.querySelector('.search-container');
         if (searchContainer && !searchContainer.contains(event.target)) {
@@ -279,8 +322,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+
     // ===================================================================
-    // --- LOGIC CHO TRANG DANH SÁCH SẢN PHẨM (products.php) ---
+    // #3 LOGIC CHO TRANG DANH SÁCH SẢN PHẨM (products.php)
     // ===================================================================
     const productGrid = document.getElementById('product-grid');
     if (productGrid) {
@@ -296,6 +340,8 @@ document.addEventListener('DOMContentLoaded', function () {
             params.append('page', page);
             const categorySlugInput = document.getElementById('current-category-slug');
             if (categorySlugInput && categorySlugInput.value) { params.append('category', categorySlugInput.value); }
+            const collectionSlugInput = document.getElementById('current-collection-slug');
+            if (collectionSlugInput && collectionSlugInput.value) { params.append('collection', collectionSlugInput.value); }
             const priceRangeInput = document.querySelector('input[name="price_range"]:checked');
             if (priceRangeInput) { params.append('price_range', priceRangeInput.value); }
             const url = `${BASE_URL}ajax-filter-products.php?${params.toString()}`;
@@ -305,12 +351,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(data => {
+                    if(data.error) { throw new Error(data.error); }
                     productGrid.innerHTML = data.products_html;
                     if (paginationContainer) { paginationContainer.innerHTML = data.pagination_html; }
                 })
                 .catch(error => {
                     console.error('Lỗi khi tải sản phẩm:', error);
-                    productGrid.innerHTML = '<p class="text-center col-12 text-danger">Đã có lỗi xảy ra.</p>';
+                    productGrid.innerHTML = '<p class="text-center col-12 text-danger">Đã có lỗi xảy ra. Vui lòng thử lại.</p>';
                 });
         }
         const allFilterElements = document.querySelectorAll('#sort-by, .filter-input');
@@ -333,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ===================================================================
-    // --- LOGIC CHO TRANG GIỎ HÀNG (cart.php) ---
+    // #4 LOGIC CHO TRANG GIỎ HÀNG (cart.php)
     // ===================================================================
     const cartPage = document.querySelector('.cart-page-container');
     if (cartPage) {
@@ -343,10 +390,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function updateCartTotals() {
             let grandTotal = 0;
             const itemRows = document.querySelectorAll('.cart-item-row');
-            if (itemRows.length === 0) {
-                // Nếu không còn sản phẩm, reload trang để hiển thị thông báo giỏ hàng trống
-                window.location.reload();
-            }
+            if (itemRows.length === 0) { window.location.reload(); }
             itemRows.forEach(row => {
                 const price = parseFloat(row.getAttribute('data-price'));
                 const quantity = parseInt(row.querySelector('.quantity-input').value, 10);
@@ -354,22 +398,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.querySelector('.item-subtotal').textContent = new Intl.NumberFormat('vi-VN').format(subtotal);
                 grandTotal += subtotal;
             });
-            
             const formattedGrandTotal = new Intl.NumberFormat('vi-VN').format(grandTotal) + 'đ';
             cartSubtotalEl.textContent = formattedGrandTotal;
             cartGrandTotalEl.textContent = formattedGrandTotal;
         }
 
         function updateCartOnServer(variantId, quantity) {
-            fetch('cart-update.php', {
+            fetch(`${BASE_URL}cart-update.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ variant_id: variantId, quantity: quantity })
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success && cartCountEl) {
-                    cartCountEl.textContent = data.cart_count;
+                if (data.success) {
+                    if(cartCountEl) { cartCountEl.textContent = data.cart_count; }
+                    if(cartCountMobile) { cartCountMobile.textContent = data.cart_count; }
                 }
             })
             .catch(console.error);
@@ -380,9 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const quantity = parseInt(event.target.value, 10);
                 const row = event.target.closest('.cart-item-row');
                 const variantId = row.getAttribute('data-variant-id');
-                if (quantity <= 0) {
-                    row.remove();
-                }
+                if (quantity <= 0) { row.remove(); }
                 updateCartTotals();
                 updateCartOnServer(variantId, quantity);
             }
@@ -393,7 +435,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const button = event.target.closest('.remove-item-btn');
                 const variantId = button.getAttribute('data-variant-id');
                 const row = button.closest('.cart-item-row');
-                
                 row.remove();
                 updateCartTotals();
                 updateCartOnServer(variantId, 0);
@@ -402,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     // ===================================================================
-    // --- LOGIC CHO TRANG XÁC THỰC (auth.php) ---
+    // #5 LOGIC CHO TRANG XÁC THỰC (auth.php)
     // ===================================================================
     const authFormContainer = document.getElementById('authTabContent');
     if (authFormContainer) {
@@ -411,121 +452,38 @@ document.addEventListener('DOMContentLoaded', function () {
         const messageDiv = document.getElementById('auth-message');
 
         const handleAuthSubmit = async (form, event) => {
-            event.preventDefault(); // Ngăn form gửi đi
+            event.preventDefault();
             const formData = new FormData(form);
             const submitButton = form.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
-            
-            // Hiển thị trạng thái loading
             submitButton.disabled = true;
             submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Đang xử lý...';
-            messageDiv.innerHTML = ''; // Xóa thông báo cũ
-
+            messageDiv.innerHTML = '';
             try {
-                const response = await fetch('auth-handler.php', {
+                const response = await fetch(`${BASE_URL}auth-handler.php`, {
                     method: 'POST',
                     body: formData
                 });
                 const result = await response.json();
-
                 if (result.success) {
                     if(result.redirect) {
-                        // Nếu đăng nhập thành công, chuyển hướng
                         window.location.href = result.redirect;
                     } else {
-                        // Nếu đăng ký thành công, hiển thị thông báo
                         messageDiv.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
-                        form.reset(); // Xóa các trường trong form
+                        form.reset();
                     }
                 } else {
-                    // Nếu có lỗi, hiển thị thông báo lỗi
                     messageDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
                 }
-
             } catch (error) {
                 messageDiv.innerHTML = `<div class="alert alert-danger">Có lỗi xảy ra, vui lòng thử lại.</div>`;
                 console.error('Auth Error:', error);
             } finally {
-                // Trả lại trạng thái ban đầu cho nút bấm
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalButtonText;
             }
         };
-
-        loginForm.addEventListener('submit', (e) => handleAuthSubmit(loginForm, e));
-        registerForm.addEventListener('submit', (e) => handleAuthSubmit(registerForm, e));
+        if(loginForm) loginForm.addEventListener('submit', (e) => handleAuthSubmit(loginForm, e));
+        if(registerForm) registerForm.addEventListener('submit', (e) => handleAuthSubmit(registerForm, e));
     }
-
-    // ===================================================================
-    // --- LOGIC CHO TRANG TÀI KHOẢN (account.php) ---
-    // ===================================================================
-    const editAddressModal = document.getElementById('editAddressModal');
-    if (editAddressModal) {
-        // Xử lý khi modal Sửa được mở
-        editAddressModal.addEventListener('show.bs.modal', function (event) {
-            // Nút đã kích hoạt modal
-            const button = event.relatedTarget;
-
-            // Lấy dữ liệu từ các data-* attribute của nút
-            const id = button.getAttribute('data-id');
-            const name = button.getAttribute('data-name');
-            const phone = button.getAttribute('data-phone');
-            const address = button.getAttribute('data-address');
-            const isDefault = button.getAttribute('data-default');
-
-            // Cập nhật các trường trong form của modal
-            const modal = this;
-            modal.querySelector('#edit-address-id').value = id;
-            modal.querySelector('#edit-full_name').value = name;
-            modal.querySelector('#edit-phone_number').value = phone;
-            modal.querySelector('#edit-address_line').value = address;
-            modal.querySelector('#edit-is_default').checked = (isDefault == '1');
-        });
-    }
-
-    const deleteAddressModal = document.getElementById('deleteAddressModal');
-    if (deleteAddressModal) {
-        // Xử lý khi modal Xóa được mở
-        deleteAddressModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const id = button.getAttribute('data-id');
-            const modal = this;
-            // Cập nhật ID địa chỉ vào form xóa
-            modal.querySelector('#delete-address-id').value = id;
-        });
-    }
-
-
-    // ===================================================================
-    // --- LOGIC CHO TRANG THANH TOÁN (checkout.php) ---
-    // ===================================================================
-    const savedAddressSelect = document.getElementById('saved_address_select');
-    if (savedAddressSelect) {
-        // Lấy các ô input cần được điền
-        const nameInput = document.getElementById('full_name');
-        const phoneInput = document.getElementById('phone_number');
-        const addressInput = document.getElementById('address');
-
-        // Gắn sự kiện 'change' cho dropdown
-        savedAddressSelect.addEventListener('change', function() {
-            // Lấy ra thẻ <option> đang được chọn
-            const selectedOption = this.options[this.selectedIndex];
-            
-            // Nếu người dùng chọn "Nhập địa chỉ mới", không làm gì cả
-            if(selectedOption.value === "") {
-                return;
-            }
-            
-            // Lấy dữ liệu từ các data-* attribute của option
-            const name = selectedOption.getAttribute('data-name');
-            const phone = selectedOption.getAttribute('data-phone');
-            const address = selectedOption.getAttribute('data-address');
-
-            // Cập nhật giá trị cho các ô input
-            nameInput.value = name;
-            phoneInput.value = phone;
-            addressInput.value = address;
-        });
-    }
-
 });

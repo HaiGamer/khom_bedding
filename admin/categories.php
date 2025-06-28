@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/auth-guard.php';
-include_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/../core/config.php'; // Kết nối CSDL
 require_once __DIR__ . '/../core/functions.php';
 
 // --- XỬ LÝ POST REQUEST (THÊM / SỬA) ---
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
+include_once __DIR__ . '/includes/header.php';
 // --- ĐIỀU HƯỚNG VIEW VÀ XỬ LÝ GET REQUEST (XEM DANH SÁCH / XÓA) ---
 $action = $_GET['action'] ?? 'list';
 

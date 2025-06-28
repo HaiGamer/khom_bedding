@@ -30,6 +30,11 @@ try {
     die("Lỗi kết nối CSDL: " . $e->getMessage());
 }
 
+// THÊM CÁC DÒNG HCAPTCHA MỚI VÀ DÁN KHÓA CỦA BẠN VÀO
+define('HCAPTCHA_SITE_KEY', '32f4ae2a-3f62-4624-8b84-d4ca3cc6072e');
+define('HCAPTCHA_SECRET_KEY', 'ES_54b52b18b0dd4c86becd86357ad8b706');
+
+
 // (Chúng ta sẽ thêm các hàm chung vào file functions.php sau)
 // require_once ROOT_PATH . 'core/functions.php';
 

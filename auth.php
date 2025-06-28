@@ -1,5 +1,5 @@
-<?php 
-// Nạp header
+<?php
+// Nạp header (header đã bao gồm config.php và session_start)
 include_once __DIR__ . '/includes/header.php'; 
 
 // Nếu người dùng đã đăng nhập, chuyển hướng họ về trang chủ
@@ -33,16 +33,11 @@ if (isset($_SESSION['user_id'])) {
                      <h3 class="text-center mb-3" style="font-family: var(--font-heading);">Chào mừng trở lại!</h3>
                      <form id="login-form">
                         <input type="hidden" name="action" value="login">
-                        <div class="mb-3">
-                           <label for="login-email" class="form-label">Email</label>
-                           <input type="email" class="form-control" id="login-email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                           <label for="login-password" class="form-label">Mật khẩu</label>
-                           <input type="password" class="form-control" id="login-password" name="password" required>
-                        </div>
-                        <div class="d-grid mt-4">
-                           <button type="submit" class="btn btn-primary btn-lg">Đăng nhập</button>
+                        <div class="mb-3"><label for="login-email" class="form-label">Email</label><input type="email"
+                              class="form-control" id="login-email" name="email" required></div>
+                        <div class="mb-3"><label for="login-password" class="form-label">Mật khẩu</label><input
+                              type="password" class="form-control" id="login-password" name="password" required></div>
+                        <div class="d-grid mt-4"><button type="submit" class="btn btn-primary btn-lg">Đăng nhập</button>
                         </div>
                      </form>
                   </div>
@@ -51,25 +46,22 @@ if (isset($_SESSION['user_id'])) {
                      <h3 class="text-center mb-3" style="font-family: var(--font-heading);">Tạo tài khoản mới</h3>
                      <form id="register-form">
                         <input type="hidden" name="action" value="register">
-                        <div class="mb-3">
-                           <label for="register-full_name" class="form-label">Họ và tên</label>
-                           <input type="text" class="form-control" id="register-full_name" name="full_name" required>
+                        <div class="mb-3"><label for="register-full_name" class="form-label">Họ và tên</label><input
+                              type="text" class="form-control" id="register-full_name" name="full_name" required></div>
+                        <div class="mb-3"><label for="register-email" class="form-label">Email</label><input
+                              type="email" class="form-control" id="register-email" name="email" required></div>
+                        <div class="mb-3"><label for="register-password" class="form-label">Mật khẩu</label><input
+                              type="password" class="form-control" id="register-password" name="password" required>
                         </div>
-                        <div class="mb-3">
-                           <label for="register-email" class="form-label">Email</label>
-                           <input type="email" class="form-control" id="register-email" name="email" required>
+                        <div class="mb-3"><label for="register-confirm_password" class="form-label">Nhập lại mật
+                              khẩu</label><input type="password" class="form-control" id="register-confirm_password"
+                              name="confirm_password" required></div>
+
+                        <div class="d-flex justify-content-center mb-3">
+                           <div class="h-captcha" data-sitekey="<?php echo HCAPTCHA_SITE_KEY; ?>"></div>
                         </div>
-                        <div class="mb-3">
-                           <label for="register-password" class="form-label">Mật khẩu</label>
-                           <input type="password" class="form-control" id="register-password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                           <label for="register-confirm_password" class="form-label">Nhập lại mật khẩu</label>
-                           <input type="password" class="form-control" id="register-confirm_password"
-                              name="confirm_password" required>
-                        </div>
-                        <div class="d-grid mt-4">
-                           <button type="submit" class="btn btn-primary btn-lg">Đăng ký</button>
+
+                        <div class="d-grid mt-4"><button type="submit" class="btn btn-primary btn-lg">Đăng ký</button>
                         </div>
                      </form>
                   </div>
@@ -80,7 +72,8 @@ if (isset($_SESSION['user_id'])) {
    </div>
 </div>
 
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
 <?php 
-// Nạp footer
 include_once __DIR__ . '/includes/footer.php'; 
 ?>

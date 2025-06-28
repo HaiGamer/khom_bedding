@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/auth-guard.php';
-include_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/../core/config.php'; // THÊM DÒNG QUAN TRỌNG NÀY
 
 // --- XỬ LÝ POST REQUEST (THÊM / SỬA) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -41,6 +41,8 @@ if ($action_get === 'delete') {
     }
     exit();
 }
+
+include_once __DIR__ . '/includes/header.php';
 
 // Mặc định, lấy dữ liệu để hiển thị form Sửa (nếu có)
 $is_editing = false;

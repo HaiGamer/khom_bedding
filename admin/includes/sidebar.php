@@ -20,6 +20,7 @@ $report_pages = ['inventory-report.php'];
          <ul class="nav flex-column ps-3">
             <li><a class="nav-link" href="<?php echo BASE_URL; ?>admin/products.php">- Tất cả sản phẩm</a></li>
             <li><a class="nav-link" href="<?php echo BASE_URL; ?>admin/categories.php">- Danh mục</a></li>
+            <li><a class="nav-link" href="<?php echo BASE_URL; ?>admin/collections.php">- Bộ sưu tập</a></li>
             <li><a class="nav-link" href="<?php echo BASE_URL; ?>admin/attributes.php">- Thuộc tính</a></li>
             <li><a class="nav-link" href="<?php echo BASE_URL; ?>admin/reviews.php">- Đánh giá</a></li>
          </ul>

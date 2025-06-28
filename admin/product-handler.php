@@ -113,6 +113,20 @@ elseif (isset($_POST['action']) && $_POST['action'] === 'edit_product') {
                 }
             }
         }
+
+        // CẬP NHẬT LIÊN KẾT BỘ SƯU TẬP
+        // B1: Xóa hết các liên kết cũ của sản phẩm này
+        $stmt_delete_coll = $pdo->prepare("DELETE FROM product_collections WHERE product_id = ?");
+        $stmt_delete_coll->execute([$product_id]);
+
+        // B2: Thêm lại các liên kết mới được chọn từ form
+        if (!empty($_POST['collections']) && is_array($_POST['collections'])) {
+            $sql_coll = "INSERT INTO product_collections (product_id, collection_id) VALUES (?, ?)";
+            $stmt_coll = $pdo->prepare($sql_coll);
+            foreach ($_POST['collections'] as $collection_id) {
+                $stmt_coll->execute([$product_id, (int)$collection_id]);
+            }
+        }
         
         foreach ($variants as $index => $variant_data) {
             $cost_price = $variant_data['cost_price'] ?? 0; // Lấy giá vốn

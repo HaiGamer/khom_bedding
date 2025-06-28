@@ -1,4 +1,10 @@
-<?php 
+<?php
+// === SỬA LỖI: Thêm Content Security Policy để cho phép reCAPTCHA ===
+// Dòng này phải được gọi trước bất kỳ mã HTML nào được xuất ra
+require_once __DIR__ . '/core/config.php';
+header("Content-Security-Policy: frame-ancestors 'self' https://www.google.com/recaptcha/;");
+
+// Nạp header
 include_once __DIR__ . '/includes/header.php'; 
 ?>
 
@@ -16,10 +22,10 @@ include_once __DIR__ . '/includes/header.php';
          <?php if(isset($_GET['status']) && $_GET['status'] == 'success'): ?>
          <div class="alert alert-success">Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong thời gian sớm nhất.</div>
          <?php elseif(isset($_GET['status']) && $_GET['status'] == 'error'): ?>
-         <div class="alert alert-danger">Có lỗi xảy ra, vui lòng thử lại.</div>
+         <div class="alert alert-danger">Có lỗi xảy ra Vui lòng thử lại.</div>
          <?php endif; ?>
 
-         <form action="contact-handler.php" method="POST">
+         <form id="contact-form" action="contact-handler.php" method="POST">
             <div class="row">
                <div class="col-md-6 mb-3">
                   <label for="name" class="form-label">Họ và tên</label>
@@ -38,6 +44,9 @@ include_once __DIR__ . '/includes/header.php';
                <label for="message" class="form-label">Nội dung tin nhắn</label>
                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
             </div>
+            <div class="mb-3">
+               <div class="h-captcha" data-sitekey="<?php echo HCAPTCHA_SITE_KEY; ?>"></div>
+            </div>
             <button type="submit" class="btn btn-primary">Gửi tin nhắn</button>
          </form>
       </div>
@@ -51,13 +60,15 @@ include_once __DIR__ . '/includes/header.php';
          <hr>
          <div class="ratio ratio-4x3">
             <iframe
-               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447171129899!2d106.69727497490216!3d10.777014289371717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f4438343717%3A0x33f182b8f8889a!2zQ8O0bmcgVmnDqm4gVsSDbiBIw7JhIENoaeG6v24gVGjhuq9uZw!5e0!3m2!1svi!2s!4v1718804860167!5m2!1svi!2s"
+               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.447123987973!2d106.6953281748053!3d10.777014289371626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f38f9ed8cb5%3A0x1bf728d2197f82b8!2zRGluaCDEkOG7mWMgTOG6rXAgKEhội%20trường%20Thống%20Nhất)!5e0!3m2!1svi!2s!4v1719512061298!5m2!1svi!2s"
                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                referrerpolicy="no-referrer-when-downgrade"></iframe>
          </div>
       </div>
    </div>
 </div>
+
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
 <?php 
 include_once __DIR__ . '/includes/footer.php'; 

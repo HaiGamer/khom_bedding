@@ -31,12 +31,14 @@
          <div class="col-lg-3">
             <h5 class="footer-title">Đăng ký nhận tin</h5>
             <p>Nhận thông tin về sản phẩm mới và các chương trình khuyến mãi đặc biệt.</p>
-            <form>
-               <div class="input-group mb-3">
-                  <input type="email" class="form-control" placeholder="Email của bạn" aria-label="Email của bạn">
-                  <button class="btn btn-primary" type="button">Đăng ký</button>
+
+            <form id="subscription-form">
+               <div class="input-group mb-2">
+                  <input type="email" class="form-control" name="email" placeholder="Email của bạn" required>
+                  <button class="btn btn-primary" type="submit">Đăng ký</button>
                </div>
             </form>
+            <div id="subscription-message" class="small mt-2"></div>
             <div class="social-icons mt-4">
                <a href="#" class="icon fs-4 me-3"><i class="bi bi-facebook"></i></a>
                <a href="#" class="icon fs-4 me-3"><i class="bi bi-instagram"></i></a>

@@ -74,7 +74,8 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
                            <?php endforeach; ?>
                         </ul>
                      </li>
-                     <li class="nav-item"><a class="nav-link" href="#">Bộ Sưu Tập</a></li>
+                     <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>collections.php">Bộ Sưu
+                           Tập</a></li>
                      <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>blog/">Blog</a></li>
                      <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>about.php">Về Khóm</a></li>
                      <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>contact.php">Liên Hệ</a></li>
@@ -145,7 +146,8 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
 
 
             <hr>
-            <li class="nav-item"><a class="nav-link" href="#">Bộ Sưu Tập</a></li>
+            <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>collections.php">Bộ Sưu Tập</a></li>
+
             <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>blog/">Blog</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>about.php">Về Khóm</a></li>
             <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>contact.php">Liên Hệ</a></li>

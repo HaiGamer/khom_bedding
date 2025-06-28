@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/core/config.php';
 
-// --- PHẦN LOGIC XỬ LÝ LỌC, SẮP XẾP, PHÂN TRANG ---
 try {
     // 1. Cấu hình phân trang
     $results_per_page = 12;
@@ -9,12 +8,14 @@ try {
     if ($page < 1) { $page = 1; }
     $offset = ($page - 1) * $results_per_page;
 
-    // 2. Xây dựng các điều kiện WHERE
+    // 2. Xây dựng các điều kiện WHERE và JOIN
     $where_clauses = ["pv.is_default = TRUE"];
     $params = [];
+    $join_clause = '';
 
-    // Lọc theo danh mục
     $category_slug = $_GET['category'] ?? '';
+    $collection_slug = $_GET['collection'] ?? '';
+
     if (!empty($category_slug)) {
         $stmt_cat = $pdo->prepare("SELECT id FROM categories WHERE slug = ?");
         $stmt_cat->execute([$category_slug]);
@@ -23,9 +24,18 @@ try {
             $where_clauses[] = "p.category_id = ?";
             $params[] = $category['id'];
         }
+    } 
+    if (!empty($collection_slug)) {
+        $stmt_coll = $pdo->prepare("SELECT id FROM collections WHERE slug = ?");
+        $stmt_coll->execute([$collection_slug]);
+        $collection = $stmt_coll->fetch();
+        if ($collection) {
+            $join_clause = "JOIN product_collections pc ON p.id = pc.product_id";
+            $where_clauses[] = "pc.collection_id = ?";
+            $params[] = $collection['id'];
+        }
     }
 
-    // Lọc theo giá
     $price_range = $_GET['price_range'] ?? 'all';
     if ($price_range !== 'all') {
         switch ($price_range) {
@@ -46,19 +56,20 @@ try {
         case 'name_asc': $order_by_clause = 'ORDER BY p.name ASC'; break;
     }
 
-    // 4. Đếm tổng số sản phẩm với bộ lọc hiện tại
-    $count_sql = "SELECT COUNT(DISTINCT p.id) FROM products p JOIN product_variants pv ON p.id = pv.product_id " . $where_sql;
+    // 4. Đếm tổng số sản phẩm
+    $count_sql = "SELECT COUNT(DISTINCT p.id) FROM products p JOIN product_variants pv ON p.id = pv.product_id $join_clause $where_sql";
     $stmt_count = $pdo->prepare($count_sql);
     $stmt_count->execute($params);
     $total_results = $stmt_count->fetchColumn();
     $total_pages = ceil($total_results / $results_per_page);
-
+    
     // 5. Lấy sản phẩm cho trang hiện tại
     $products_sql = "
         SELECT p.name, p.slug, pv.price, pv.original_price, 
                (SELECT image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_featured = TRUE LIMIT 1) as image_url
         FROM products p
         JOIN product_variants pv ON p.id = pv.product_id
+        $join_clause
         $where_sql
         GROUP BY p.id
         $order_by_clause
@@ -69,12 +80,10 @@ try {
     $products = $stmt_products->fetchAll();
 
 } catch (PDOException $e) {
-    // Trả về lỗi nếu có sự cố
     header("HTTP/1.1 500 Internal Server Error");
     echo json_encode(['error' => 'Lỗi CSDL: ' . $e->getMessage()]);
     exit();
 }
-
 
 // --- TẠO HTML CHO SẢN PHẨM VÀ PHÂN TRANG ---
 ob_start();
@@ -104,9 +113,5 @@ ob_start();
 <?php
 $pagination_html = ob_get_clean();
 
-// Trả về kết quả dạng JSON
 header('Content-Type: application/json');
-echo json_encode([
-    'products_html' => $products_html,
-    'pagination_html' => $pagination_html
-]);
+echo json_encode(['products_html' => $products_html, 'pagination_html' => $pagination_html]);
